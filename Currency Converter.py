@@ -2,7 +2,7 @@ from TKinter import *
 
 root = Tk()
 
-root.title("Calculator")
+root.title("Currency Exchanger")
 root.geometry("500x500")
 
 root.mainloop()
