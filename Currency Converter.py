@@ -2,6 +2,7 @@ import platform
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from autocomplete import *
 if platform.system() == 'Darwin':
     from tkmacosx import Button
 
@@ -54,9 +55,8 @@ entry_amount.place(x = 250, y = 60, anchor="center")
 ## MID 1
 label_2 = Label(frame_mid_1, text = 'From', font = ('Helvetica', 16))
 label_2.place(x = 100, y = 20, anchor = 'center')
-dd_from = ttk.Combobox(frame_mid_1, width = 15, justify = 'center', font = ('Helvetica', 16), values = list_currency)
+dd_from = Combobox_Autocomplete(frame_mid_1, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency)
 dd_from.place(x = 100, y = 60, anchor = 'center')
-dd_from.current(21)
 label_flag_from = Label(frame_mid_1, text = '<FLAG>', bg = 'Black', fg = 'white')
 label_flag_from.place(x = 100, y = 100, anchor = 'center')
 
@@ -68,9 +68,8 @@ btn_swap.place(x = 50, y = 60, anchor = 'center')
 ## MID 3
 label_3 = Label(frame_mid_3, text = 'To', font = ('Helvetica', 16))
 label_3.place(x = 100, y = 20, anchor = 'center')
-dd_to = ttk.Combobox(frame_mid_3, width = 15, justify = 'center', font = ('Helvetica', 16), values = list_currency)
+dd_to = Combobox_Autocomplete(frame_mid_3, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency)
 dd_to.place(x = 100, y = 60, anchor = 'center')
-dd_to.current(66)
 label_flag_to = Label(frame_mid_3, text = '<FLAG>', bg = 'Black', fg = 'white')
 label_flag_to.place(x = 100, y = 100, anchor = 'center')
 
