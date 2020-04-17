@@ -24,6 +24,14 @@ def get_full_path(file_name):
     full_path = os.path.join(dir_path, file_name)
     return full_path
 
+def on_convert_click():
+    amount = entry_amount.get()
+    curr_from = dd_from.get_value()
+    curr_to = dd_to.get_value()
+    print(amount)
+    print(curr_from)
+    print(curr_to)
+
 # --------------------------------------- #
 
 root = Tk()
@@ -86,7 +94,7 @@ label_flag_to.place(x = 100, y = 100, anchor = 'center')
 
 
 ## MID 4
-btn_convert = Button(frame_mid_4, text = 'Convert', font = ('Helvetica', 22))
+btn_convert = Button(frame_mid_4, text = 'Convert', font = ('Helvetica', 22), command = on_convert_click)
 btn_convert.place( x = 250, y = 25, anchor = 'center')
 
 
