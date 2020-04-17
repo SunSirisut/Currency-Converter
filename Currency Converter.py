@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from autocomplete import *
+import os
 if platform.system() == 'Darwin':
     from tkmacosx import Button
 
@@ -15,6 +16,15 @@ list_currency = ['AED', 'ALL', 'AMD', 'ANG', 'ARS', 'AUD', 'AZN', 'BDT', 'BGN', 
                 , 'TRY', 'TWD', 'UAH', 'USD', 'UZS', 'VND', 'ZAR']
 
 
+
+# ------------ FUNCTION ZONE ------------ #
+
+def get_full_path(file_name):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    full_path = os.path.join(dir_path, file_name)
+    return full_path
+
+# --------------------------------------- #
 
 root = Tk()
 
@@ -61,7 +71,8 @@ label_flag_from = Label(frame_mid_1, text = '<FLAG>', bg = 'Black', fg = 'white'
 label_flag_from.place(x = 100, y = 100, anchor = 'center')
 
 ## MID 2
-img_swap = ImageTk.PhotoImage(Image.open('swap.png').resize((30, 30), Image.ANTIALIAS))
+
+img_swap = ImageTk.PhotoImage(Image.open(get_full_path('swap.png')).resize((30, 30), Image.ANTIALIAS))
 btn_swap = Button(frame_mid_2, image = img_swap,  width = 40, height = 40)
 btn_swap.place(x = 50, y = 60, anchor = 'center')
 
