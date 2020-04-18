@@ -1,12 +1,23 @@
 import platform
 from tkinter import *
 from tkinter import ttk
-from PIL import Image, ImageTk
+import io
+import pandas as pd
 from autocomplete import *
+from urllib.request import urlopen, Request
+from PIL import Image, ImageTk
 import os
 if platform.system() == 'Darwin':
     from tkmacosx import Button
 
+root = Tk()
+
+root.title("Currency Exchanger")
+root.geometry("500x700")
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
+
+# ----------- VARIABLE ZONE --------------- #
 
 list_currency = ['AED', 'ALL', 'AMD', 'ANG', 'ARS', 'AUD', 'AZN', 'BDT', 'BGN', 'BHD', 'BND', 'BRL', 'BYN', 'CAD'
                 , 'CHF', 'CLP', 'CNY', 'CZK', 'DKK', 'DZD', 'EGP', 'EUR', 'GBP', 'GEL', 'GHS', 'HKD', 'HRK', 'HUF'
@@ -16,6 +27,21 @@ list_currency = ['AED', 'ALL', 'AMD', 'ANG', 'ARS', 'AUD', 'AZN', 'BDT', 'BGN', 
                 , 'TRY', 'TWD', 'UAH', 'USD', 'UZS', 'VND', 'ZAR']
 
 
+url_from = 'https://www.countryflags.io/th/flat/64.png'
+req_from = Request(url_from, headers={'User-Agent': 'Mozilla/5.0'})
+image_bytes_from = urlopen(req_from).read()
+data_stream_from = io.BytesIO(image_bytes_from)
+pil_image_from = Image.open(data_stream_from)
+tk_image_from = ImageTk.PhotoImage(pil_image_from)
+
+url_to = 'https://www.countryflags.io/th/flat/64.png'
+req_to = Request(url_to, headers={'User-Agent': 'Mozilla/5.0'})
+image_bytes_to = urlopen(req_to).read()
+data_stream_to = io.BytesIO(image_bytes_to)
+pil_image_to = Image.open(data_stream_to)
+tk_image_to = ImageTk.PhotoImage(pil_image_to)
+
+# ----------------------------------------- #
 
 # ------------ FUNCTION ZONE ------------ #
 
@@ -23,6 +49,44 @@ def get_full_path(file_name):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     full_path = os.path.join(dir_path, file_name)
     return full_path
+
+
+df_code_mapping = pd.read_csv(get_full_path('country_currency_mapping.csv'))
+
+def update_flag_from(cur_from):
+    global url_from, req_from, image_bytes_from, data_stream_from, pil_image_from, tk_image_from
+    global df_code_mapping
+    if cur_from != '':
+        code_from = df_code_mapping[df_code_mapping['Code'] == cur_from].iloc[0, 1]
+        url_from = 'https://www.countryflags.io/' + code_from +'/flat/64.png'
+        req_from = Request(url_from, headers={'User-Agent': 'Mozilla/5.0'})
+        image_bytes_from = urlopen(req_from).read()
+        data_stream_from = io.BytesIO(image_bytes_from)
+        pil_image_from = Image.open(data_stream_from)
+        tk_image_from = ImageTk.PhotoImage(pil_image_from)
+
+        label_flag_from.configure(image = tk_image_from)
+    else:
+        label_flag_from.configure(image = '')
+
+def update_flag_to(cur_to):
+    global url_to, req_to, image_bytes_to, data_stream_to, pil_image_to, tk_image_to
+    global df_code_mapping
+
+    if cur_to != '':
+        code_to = df_code_mapping[df_code_mapping['Code'] == cur_to].iloc[0, 1]
+
+        url_to = 'https://www.countryflags.io/' + code_to + '/flat/64.png'
+        req_to = Request(url_to, headers={'User-Agent': 'Mozilla/5.0'})
+        image_bytes_to = urlopen(req_to).read()
+        data_stream_to = io.BytesIO(image_bytes_to)
+        pil_image_to = Image.open(data_stream_to)
+        tk_image_to = ImageTk.PhotoImage(pil_image_to)
+
+        label_flag_to.configure(image = tk_image_to)
+    else:
+        label_flag_to.configure(image = '')
+
 
 def on_convert_click():
     amount = entry_amount.get()
@@ -33,13 +97,6 @@ def on_convert_click():
     print(curr_to)
 
 # --------------------------------------- #
-
-root = Tk()
-
-root.title("Currency Exchanger")
-root.geometry("500x700")
-root.grid_rowconfigure(1, weight=1)
-root.grid_columnconfigure(0, weight=1)
 
 # ----- FRAME ----- #
 frame_top = Frame(root, width = 500, height = 100)
@@ -73,10 +130,15 @@ entry_amount.place(x = 250, y = 60, anchor="center")
 ## MID 1
 label_2 = Label(frame_mid_1, text = 'From', font = ('Helvetica', 16))
 label_2.place(x = 100, y = 20, anchor = 'center')
-dd_from = Combobox_Autocomplete(frame_mid_1, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency)
+
+code_from = StringVar()
+dd_from = Combobox_Autocomplete(frame_mid_1, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency, textvariable = code_from)
 dd_from.place(x = 100, y = 60, anchor = 'center')
-label_flag_from = Label(frame_mid_1, text = '<FLAG>', bg = 'Black', fg = 'white')
-label_flag_from.place(x = 100, y = 100, anchor = 'center')
+dd_from.bind('<Return>', (lambda _: update_flag_from(dd_from.get_value())))
+dd_from.bind('<Button-1>', (lambda _: update_flag_from(dd_from.get_value())))
+
+label_flag_from = Label(frame_mid_1, image = '', bg = 'White')
+label_flag_from.place(x = 100, y = 120, anchor = 'center')
 
 ## MID 2
 
@@ -87,10 +149,15 @@ btn_swap.place(x = 50, y = 60, anchor = 'center')
 ## MID 3
 label_3 = Label(frame_mid_3, text = 'To', font = ('Helvetica', 16))
 label_3.place(x = 100, y = 20, anchor = 'center')
-dd_to = Combobox_Autocomplete(frame_mid_3, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency)
+
+code_to = StringVar()
+dd_to = Combobox_Autocomplete(frame_mid_3, width = 15, justify = 'center', font = ('Helvetica', 16), list_of_items = list_currency, textvariable = code_to)
 dd_to.place(x = 100, y = 60, anchor = 'center')
-label_flag_to = Label(frame_mid_3, text = '<FLAG>', bg = 'Black', fg = 'white')
-label_flag_to.place(x = 100, y = 100, anchor = 'center')
+dd_to.bind('<Return>', (lambda _: update_flag_to(dd_to.get_value())))
+dd_to.bind('<Button-1>', (lambda _: update_flag_to(dd_to.get_value())))
+
+label_flag_to = Label(frame_mid_3, image = '', bg = 'White')
+label_flag_to.place(x = 100, y = 120, anchor = 'center')
 
 
 ## MID 4

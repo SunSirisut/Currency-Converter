@@ -208,6 +208,8 @@ class Combobox_Autocomplete(Entry, object):
             self.focus()
             self.icursor(END)
             self.xview_moveto(1.0)
+
+            self.event_generate('<Button-1>')
             
         return "break"
 
