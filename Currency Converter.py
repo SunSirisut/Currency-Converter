@@ -59,6 +59,7 @@ def get_full_path(file_name):
     full_path = os.path.join(dir_path, file_name)
     return full_path
 
+
 df_code_mapping = pd.read_csv(get_full_path('country_currency_mapping.csv'))
 
 def update_flag_from(cur_from):
