@@ -78,6 +78,7 @@ def update_flag_from(cur_from):
     else:
         label_flag_from.configure(image = '')
 
+
 def update_flag_to(cur_to):
     global url_to, req_to, image_bytes_to, data_stream_to, pil_image_to, tk_image_to
     global df_code_mapping
@@ -105,6 +106,19 @@ def on_convert_click():
     exchange_rate_data = requests.request("GET", exchange_rate_url, headers=headers, params=querystring).json()
     converted_amount = exchange_rate_data['rates'][curr_to]['rate_for_amount']
     label_result.configure(text=converted_amount)
+
+
+def on_swap_click():
+    tmp_from = dd_from.get_value()
+    tmp_to = dd_to.get_value()
+    dd_from.delete(0, END)
+    dd_from.insert(0, tmp_to)
+    dd_to.delete(0, END)
+    dd_to.insert(0, tmp_from)
+    dd_from.unpost_listbox()
+    dd_from.event_generate('<Button-1>')
+    dd_to.unpost_listbox()
+    dd_to.event_generate('<Button-1>')
 
 # --------------------------------------- #
 
@@ -153,7 +167,7 @@ label_flag_from.place(x = 100, y = 120, anchor = 'center')
 ## MID 2
 
 img_swap = ImageTk.PhotoImage(Image.open(get_full_path('swap.png')).resize((30, 30), Image.ANTIALIAS))
-btn_swap = Button(frame_mid_2, image = img_swap,  width = 40, height = 40)
+btn_swap = Button(frame_mid_2, image = img_swap,  width = 40, height = 40, command = on_swap_click)
 btn_swap.place(x = 50, y = 60, anchor = 'center')
 
 ## MID 3
