@@ -19,12 +19,18 @@ from pandas import DataFrame
 if platform.system() == 'Darwin':
     from tkmacosx import Button
 
+
+color_bg_1 = '#F4D03F'
+color_bg_2 = '#212F3C'
+color_graph = '#F1C40F'
+
 root = Tk()
 
 root.title("Currency Exchanger")
 root.geometry("1000x400")
 root.grid_rowconfigure(1, weight=1)
 root.grid_columnconfigure(0, weight=1)
+root.configure(background = color_bg_1)
 
 # ----------- VARIABLE ZONE --------------- #
 
@@ -148,7 +154,7 @@ def show_graph(period):
         fig.set_figwidth(5)
         line = FigureCanvasTkAgg(fig, frame_graph_2)
         line.get_tk_widget().pack()
-        ax.plot(x, y, color = 'blue', linewidth = 2.0, marker = 'o', markersize = 8)
+        ax.plot(x, y, color = color_graph, linewidth = 2.0, marker = 'o', markersize = 8)
         ax.set_xticks(x)
         ax.tick_params(axis = "x", labelsize = 8)
         ax.tick_params(axis = "y", labelsize = 8)
@@ -192,23 +198,23 @@ def on_swap_click():
 # --------------------------------------- #
 
 # ----- FRAME ----- #
-frame_top = Frame(root, width = 500, height = 100)
+frame_top = Frame(root, width = 500, height = 100, background = color_bg_1)
 frame_top.grid(row = 0, column = 0, sticky = "NSEW")
 frame_top.grid_propagate(0)
 
 frame_mid = Frame(root, width = 500, height = 200)
 frame_mid.grid(row = 1, column = 0, sticky = "NSEW")
-frame_mid_1 = Frame(frame_mid, width = 200, height=150)
+frame_mid_1 = Frame(frame_mid, width = 200, height=150, background = color_bg_1)
 frame_mid_1.grid(row = 0, column = 0, sticky = "NSEW")
-frame_mid_2 = Frame(frame_mid, width = 100, height=150)
+frame_mid_2 = Frame(frame_mid, width = 100, height=150, background = color_bg_1)
 frame_mid_2.grid(row = 0, column = 1, sticky = "NSEW")
-frame_mid_3 = Frame(frame_mid, width = 200, height=150)
+frame_mid_3 = Frame(frame_mid, width = 200, height=150, background = color_bg_1)
 frame_mid_3.grid(row = 0, column = 2, sticky = "NSEW")
-frame_mid_4 = Frame(frame_mid, width = 200, height=50)
+frame_mid_4 = Frame(frame_mid, width = 200, height=50, background = color_bg_1)
 frame_mid_4.grid(row = 2, column = 0, columnspan = 3, sticky = "NSEW")
 
-frame_result = Frame(root, width = 500, height = 100)
-frame_result.grid(row = 2, column = 0, sticky = "NSEW")
+frame_result = Frame(root, width = 500, height = 100, background = color_bg_2)
+frame_result.grid(row = 2, column = 0, padx = 10, pady = 5, sticky = "NSEW")
 
 frame_graph = Frame(root, width = 500, height = 400)
 frame_graph.grid(row = 0, column = 1, rowspan = 3, padx = 5, pady = 5, sticky = "NSEW")
@@ -219,7 +225,7 @@ frame_graph_2.grid(row = 1, column = 0, sticky = "NSEW")
 
 
 # FRAME TOP
-label_1 = Label(frame_top, text = 'Enter amount', font = ('Helvetica', 18))
+label_1 = Label(frame_top, text = 'Enter amount', font = ('Helvetica', 18), bg = color_bg_1)
 label_1.place(x = 250, y = 30, anchor="center")
 
 entry_amount = Entry(frame_top, font = ('Helvetica', 20), justify = 'center')
@@ -228,7 +234,7 @@ entry_amount.place(x = 250, y = 70, width = 450, height = 40, anchor="center")
 
 # FRAME MID
 ## MID 1
-label_2 = Label(frame_mid_1, text = 'From', font = ('Helvetica', 18))
+label_2 = Label(frame_mid_1, text = 'From', font = ('Helvetica', 18), bg = color_bg_1)
 label_2.place(x = 100, y = 20, anchor = 'center')
 
 code_from = StringVar()
@@ -237,17 +243,17 @@ dd_from.place(x = 100, y = 60, width = 150, height = 40, anchor = 'center')
 dd_from.bind('<Return>', (lambda _: update_flag_from(dd_from.get_value())))
 dd_from.bind('<Button-1>', (lambda _: update_flag_from(dd_from.get_value())))
 
-label_flag_from = Label(frame_mid_1, image = '', bg = 'White')
+label_flag_from = Label(frame_mid_1, image = '', bg = color_bg_1)
 label_flag_from.place(x = 100, y = 120, anchor = 'center')
 
 ## MID 2
 
 img_swap = ImageTk.PhotoImage(Image.open(get_full_path('swap.png')).resize((30, 30), Image.ANTIALIAS))
-btn_swap = Button(frame_mid_2, image = img_swap,  width = 40, height = 40, command = on_swap_click)
+btn_swap = Button(frame_mid_2, image = img_swap,  width = 50, height = 40, command = on_swap_click, bg = color_bg_2)
 btn_swap.place(x = 50, y = 60, anchor = 'center')
 
 ## MID 3
-label_3 = Label(frame_mid_3, text = 'To', font = ('Helvetica', 18))
+label_3 = Label(frame_mid_3, text = 'To', font = ('Helvetica', 18), bg = color_bg_1)
 label_3.place(x = 100, y = 20, anchor = 'center')
 
 code_to = StringVar()
@@ -256,29 +262,29 @@ dd_to.place(x = 100, y = 60, width = 150, height = 40, anchor = 'center')
 dd_to.bind('<Return>', (lambda _: update_flag_to(dd_to.get_value())))
 dd_to.bind('<Button-1>', (lambda _: update_flag_to(dd_to.get_value())))
 
-label_flag_to = Label(frame_mid_3, image = '', bg = 'White')
+label_flag_to = Label(frame_mid_3, image = '', bg = color_bg_1)
 label_flag_to.place(x = 100, y = 120, anchor = 'center')
 
 
 ## MID 4
-btn_convert = Button(frame_mid_4, text = 'Convert', font = ('Helvetica', 22), command = on_convert_click)
-btn_convert.place( x = 250, y = 25, anchor = 'center')
+btn_convert = Button(frame_mid_4, text = 'Convert', font = ('Helvetica', 22), bg = color_bg_2, fg = 'White', command = on_convert_click)
+btn_convert.place( x = 250, y = 15, anchor = 'center')
 
 
 # RESULT
-label_result = Label(frame_result, text = '', font = ('Helvetica', 36))
+label_result = Label(frame_result, text = '', font = ('Helvetica', 36), bg = color_bg_2, fg = '#FFCC00')
 label_result.place(x = 250, y = 50, anchor = 'center')
 
 
 ## GRAPH
 # BUTTONS
-btn_3days = Button(frame_graph_1, text = '3 days', font = ('Helvetica', 12), command = lambda: show_graph(3))
+btn_3days = Button(frame_graph_1, text = '3 days', font = ('Helvetica', 12), bg = color_bg_2, fg = 'White',  borderwidth=0, command = lambda: show_graph(3))
 btn_3days.place( x = 80, y = 25, anchor = 'center')
 
-btn_1week = Button(frame_graph_1, text = '1 week', font = ('Helvetica', 12), command = lambda: show_graph(7))
+btn_1week = Button(frame_graph_1, text = '1 week', font = ('Helvetica', 12), bg = color_bg_2, fg = 'White', command = lambda: show_graph(7))
 btn_1week.place( x = 250, y = 25, anchor = 'center')
 
-btn_1month = Button(frame_graph_1, text = '1 month', font = ('Helvetica', 12), command = lambda: show_graph(30))
+btn_1month = Button(frame_graph_1, text = '1 month', font = ('Helvetica', 12), bg = color_bg_2, fg = 'White', command = lambda: show_graph(30))
 btn_1month.place( x = 420, y = 25, anchor = 'center')
 
 # GRAPH
