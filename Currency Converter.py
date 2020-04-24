@@ -48,19 +48,7 @@ list_currency = ['AED', 'ALL', 'AMD', 'ANG', 'ARS', 'AUD', 'AZN', 'BDT', 'BGN', 
                 , 'TRY', 'TWD', 'UAH', 'USD', 'UZS', 'VND', 'ZAR']
 
 
-url_from = 'https://www.countryflags.io/th/flat/64.png'
-req_from = Request(url_from, headers={'User-Agent': 'Mozilla/5.0'})
-image_bytes_from = urlopen(req_from).read()
-data_stream_from = io.BytesIO(image_bytes_from)
-pil_image_from = Image.open(data_stream_from)
-tk_image_from = ImageTk.PhotoImage(pil_image_from)
-
-url_to = 'https://www.countryflags.io/th/flat/64.png'
-req_to = Request(url_to, headers={'User-Agent': 'Mozilla/5.0'})
-image_bytes_to = urlopen(req_to).read()
-data_stream_to = io.BytesIO(image_bytes_to)
-pil_image_to = Image.open(data_stream_to)
-tk_image_to = ImageTk.PhotoImage(pil_image_to)
+df_cache_data = pd.read_csv('cache_data.csv')
 
 # ----------------------------------------- #
 
@@ -70,6 +58,16 @@ def get_full_path(file_name):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     full_path = os.path.join(dir_path, file_name)
     return full_path
+
+
+def check_in_cache(d, f, t):
+    global df_cache_data
+    result = ''
+    for i in range(len(df_cache_data)):
+        if df_cache_data.loc[i]['date'] == d and df_cache_data.loc[i]['from'] == f and df_cache_data.loc[i]['to'] == t:
+            result = df_cache_data.loc[i]['rate']
+            return result
+    return result
 
 
 def get_currency_by_range(f, t, r):
@@ -84,10 +82,16 @@ def get_currency_by_range(f, t, r):
     
     for d in l_date:
         print(d)
-        url = "https://currency-converter5.p.rapidapi.com/currency/historical/" + d
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        res = response.json()
-        l_cur.append(res['rates'][t]['rate'])
+        tmp = str(check_in_cache(d, f, t))
+        if len(tmp) != 0:
+            l_cur.append(tmp)
+        else:
+            url = "https://currency-converter5.p.rapidapi.com/currency/historical/" + d
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            res = response.json()
+            l_cur.append(res['rates'][t]['rate'])
+            new_row = [d, f, t, res['rates'][t]['rate']]
+            df_cache_data.loc[len(df_cache_data)] = new_row
         
     return l_date, l_cur
 
@@ -303,4 +307,6 @@ ax.set_xticks(x)
 ax.tick_params(axis = "x", labelsize = 8)
 ax.tick_params(axis = "y", labelsize = 8)
 
+
+df_cache_data.to_csv('cache_data.csv', index=False)
 root.mainloop()
