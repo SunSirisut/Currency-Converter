@@ -80,7 +80,7 @@ def get_currency_by_range(f, t, r):
         d = datetime.today() - timedelta(days = i)
         l_date.append(d.strftime('%Y-%m-%d'))
         
-    querystring = {"format" : "json", "to" : t, "from" : f, "amount" : "1"}
+    querystring = {"format" : "json", "to" : t, "from" : f}
     
     for d in l_date:
         print(d)
@@ -133,6 +133,8 @@ def update_flag_to(cur_to):
 def show_graph(period):
     curr_from = dd_from.get_value()
     curr_to = dd_to.get_value()
+    print(curr_from)
+    print(curr_to)
     
     if curr_from != '' and curr_to != '':
         for widget in frame_graph_2.winfo_children():
