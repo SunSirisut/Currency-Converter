@@ -60,7 +60,18 @@ def get_full_path(file_name):
     return full_path
 
 
+def check_in_cache(d, f, t):
+    global df_cache_data
+    result = ''
+    for i in range(len(df_cache_data)):
+        if df_cache_data.loc[i]['date'] == d and df_cache_data.loc[i]['from'] == f and df_cache_data.loc[i]['to'] == t:
+            result = df_cache_data.loc[i]['rate']
+            return result
+    return result
+
+
 def get_currency_by_range(f, t, r):
+    global df_cache_data
     l_date = []
     l_cur = []
     
@@ -72,11 +83,18 @@ def get_currency_by_range(f, t, r):
     
     for d in l_date:
         print(d)
-        url = "https://currency-converter5.p.rapidapi.com/currency/historical/" + d
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        res = response.json()
-        l_cur.append(res['rates'][t]['rate'])
-        
+        tmp = str(check_in_cache(d, f, t))
+        if len(tmp) != 0:
+            l_cur.append(tmp)
+        else:
+            url = "https://currency-converter5.p.rapidapi.com/currency/historical/" + d
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            res = response.json()
+            l_cur.append(res['rates'][t]['rate'])
+            new_row = [d, f, t, res['rates'][t]['rate']]
+            df_cache_data.loc[len(df_cache_data)] = new_row
+    
+    df_cache_data.to_csv('cache_data.csv', index=False)
     return l_date, l_cur
 
 
@@ -290,5 +308,6 @@ ax.plot(x, y, color = 'blue', linewidth = 2.0, marker = 'o', markersize = 8)
 ax.set_xticks(x)
 ax.tick_params(axis = "x", labelsize = 8)
 ax.tick_params(axis = "y", labelsize = 8)
+
 
 root.mainloop()
